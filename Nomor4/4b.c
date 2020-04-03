@@ -21,18 +21,22 @@ void *bumi(void *args){
 int main(){
     pthread_t threads[20];
     key_t key = 1001;
+    
+    //menjadikan array C shared variable agar bisa mengambil hasil dari program 4a
     int *C;
     int i,j;
     int shmid = shmget(key,20*sizeof(int),IPC_CREAT | 0666);
     C = (int *)shmat(shmid,NULL,0);
 
+    //mencetak isi array C
     for(i=0;i<4;i++){
         for(j=0;j<5;j++){
             printf("%d ",C[i*5 + j]);
         }
         puts("");
     }
-
+    
+    //melakukan perhitungan penjumlahan 1 hingga elemen matriks tiap elemen matriks menggunakan thread
     for(i=0;i<20;i++){
         temp[i]=C[i];
         if(pthread_create(&(threads[i]),NULL,&bumi,(void*)i)==1){
@@ -43,6 +47,7 @@ int main(){
         pthread_join(threads[i],NULL);
     }
     
+    //mencetak hasil penjumlahan
     for(i=0;i<4;i++){
         for(j=0;j<5;j++){
             printf("%lld ",arr[i*5 + j]);
