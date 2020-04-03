@@ -14,11 +14,13 @@ int main(){
     int B[2][5]={1,1,2,2,3,1,2,3,1,1};
     int *C;
 
+    //menjadikan array C dengan ukuran 20 menjadi shared variable
     int shmid;
     if((shmid= shmget(key,20*sizeof(int),IPC_CREAT | 0666 ))<0)
         puts("do something");
     C = (int *)shmat(shmid,NULL,0);
-
+    
+    //mengalikan matriks A dan B dan disimpan di matriks C
     for(i =0;i<4;i++){
         for(j=0;j<5;j++){
             for(k=0;k<2;k++){
@@ -27,7 +29,8 @@ int main(){
             }
         }
     }
-
+    
+    //mencetak matriks C
     for (i=0;i<4;i++){
         for(j=0;j<5;j++){
             printf("%d ",C[i*5 + j]);
