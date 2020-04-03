@@ -33,4 +33,4 @@ Kita diminta untuk membuat program yang digunakan untuk mengkategorikan file ber
 ### Jawaban :
 <a href="Nomor4/4a.c" >-Source Code 4a</a><br>
 <a href="Nomor4/4b.c" >-Source Code 4b</a><br>
-<a href="Nomor4/4c.c" >-Source Code 4b</a>
+<a href="Nomor4/4c.c" >-Source Code 4c</a>
