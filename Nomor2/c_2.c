@@ -55,10 +55,12 @@ int kbhit(void){
 }
 
 void *langit(void *args){
+    //generate tap persecond secara random antara 10-15 tap
     double time=1/(double)((random()%10)+5);
     clock_t t=clock();
     before=my_health+1;
     while(my_health>0&&enemy_health>0){
+        //ketika waktu yang dilampaui telah lebih/sama dengan tap/second
         if(((double)(clock()-t)/CLOCKS_PER_SEC)>=time){
             my_health-=1;
             t=clock();
@@ -70,11 +72,17 @@ void *gurun(void *arg){
     int flag=1,i;
     char command[64];
     
+    //ketika belum logout
     while(flag){
         puts("1. Find Match\n2. Logout");
         printf("%s","Choices : ");
+        
+        //mendapatkan input
         gets(command);
+        
+        //input find match
         if(tolower(command[0])=='f'){
+            //waiting time didapatkan dari angka random 1-10 detik
             int time=random()%10;
             while(time>0){
                 puts("Waiting For Player ....");
@@ -88,18 +96,23 @@ void *gurun(void *arg){
                 execlp("clear","clear",(char *)NULL);
             }
             while((wait(&status)>0));
+            
+            //Game dimulai dengan menjalankan fungsi langit dengan thread untuk enemy
             puts("game dimulai silahkan taptap secepat mungkin !!!!");
             pthread_t trd2;
             if(pthread_create(&(trd2),NULL,&langit,NULL)==1){
                 printf("Thread %d Error\n",i);
             }
             while(my_health>0&&enemy_health>0){
+                //ketika tidak tap
                 if(!kbhit()){
+                    //ketika darah kita berkurang
                     if(before-my_health==2){
                         before-=1;
                         printf("\t\t\t\t\t\t\t%d\n",my_health);
                     }
                 }
+                //ketika tap
                 else if(getch()==32){
                     if(before-my_health==2){
                         before-=1;
@@ -109,6 +122,7 @@ void *gurun(void *arg){
                 }
             }
             printf("%d\n",my_health);
+            //pengecekan pemenang
             if(my_health>0){
                 puts("Game berakhir kamu menang");
             }
@@ -118,6 +132,8 @@ void *gurun(void *arg){
             pthread_join(trd2,NULL);
             sleep(4);
         }
+        
+        //input logout
         else{
             flag=0;
         }
@@ -170,18 +186,22 @@ int main() {
     while(1){
         puts("1. Login\n2. Register");
         printf("%s","Choices : ");
-
+        
+        //mendapatkan input command
         gets(command);
 
         send(sock,command,strlen(command),0);
         if(command[0]=='q')break;
-
+        
+        //mendapatkan username
         gets(username);
         send(sock,username,strlen(username),0);
-
+        
+        //mendapatkan password
         gets(password);
         send(sock,password,strlen(password),0);
 
+        //mendapatkan feedback dari server
         read(sock,message,64);
 
         int status;
@@ -190,8 +210,10 @@ int main() {
         }
         while((wait(&status)>0));
         puts(message);
-
+        
+        //ketika login success
         if(strcmp(message,"login success")==0){
+            //menjalankan fungsi gurun dengan thread untuk screen 2
             pthread_t trd1;
             if(pthread_create(&trd1,NULL,&gurun,NULL)==1){
                 printf("Thread Error\n");
